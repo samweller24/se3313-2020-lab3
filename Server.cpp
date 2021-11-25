@@ -37,11 +37,6 @@ public:
         {
             try
             {
-                if(endThread){
-                    socket.Close();
-                    std::cout << "SocketThread Ending" << std::endl;
-                    delete this;
-                }
                 // Wait for data
                 while(socket.Read(data) > 0){
                     std::string string = data.ToString();
@@ -56,13 +51,7 @@ public:
                     std::string done = "DONE";
                     if (string == done) {
                         std::cout<<"Client has closed...\n";
-                    }
-
-                    //Closing server command entered
-                    std::string close = "CLOSE";
-                    if (string == close) {
-                        std::cout<<"Terminating server...\n";
-                        endThread = true;
+                        break;
                     }
 
                     ByteArray return_data = ByteArray(string);
@@ -96,6 +85,7 @@ public:
         for(SocketThread* thread : socketThreads){
             try {
                 // Close the sockets
+                std::cout<<"Closing socket...\n";
                 Socket& toClose = thread->GetSocket();
                 toClose.Close();
                 delete thread;
@@ -147,6 +137,6 @@ int main(void)
 
     // Shut down and clean up the server
     server.Shutdown();
-    std::cout << "Server Exiting." << std::endl;
+    std::cout << "Server Exiting..." << std::endl;
 
 }
